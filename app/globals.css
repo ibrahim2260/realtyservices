@@ -1,26 +1,436 @@
 @import "tailwindcss";
 
+/* ─────────────────────────────────────────────────────────────
+   DESIGN TOKENS — Borough Ledger System
+   All values live here. No magic numbers in components.
+───────────────────────────────────────────────────────────── */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Brand palette */
+  --ink: #101820;
+  --paper: #F7F5F0;
+  --harbor: #1E3A4C;
+  --signal: #C8451F;
+  --brass: #9A7B4F;
+  --slate: #5E6B73;
+
+  /* Derived palette */
+  --harbor-900: #0F2130;
+  --harbor-800: #152B3A;
+  --harbor-700: #1E3A4C;
+  --harbor-600: #2A4F68;
+  --harbor-500: #3A6A87;
+  --harbor-300: #7FA8BE;
+  --harbor-100: #D4E5EF;
+
+  --paper-dark: #EDE9E1;
+  --paper-mid:  #E4DFD5;
+  --ink-soft: #1C2530;
+
+  --signal-dark: #A33518;
+  --signal-light: #D96240;
+
+  --brass-dark: #7A6138;
+  --brass-light: #BFA880;
+
+  --slate-dark: #4A555C;
+  --slate-light: #8A969D;
+
+  /* Typography scale */
+  --text-display-xl: clamp(3.5rem, 8vw, 8rem);
+  --text-display-lg: clamp(2.5rem, 5vw, 4.5rem);
+  --text-display-md: clamp(1.75rem, 3vw, 3rem);
+  --text-body-xl: 1.25rem;
+  --text-body-lg: 1.0625rem;
+  --text-body-md: 0.9375rem;
+  --text-label: 0.6875rem;
+
+  /* Leading */
+  --leading-display: 0.95;
+  --leading-tight: 1.15;
+  --leading-body: 1.65;
+  --leading-loose: 1.8;
+
+  /* Tracking */
+  --tracking-display: -0.03em;
+  --tracking-tight: -0.015em;
+  --tracking-normal: 0em;
+  --tracking-wide: 0.08em;
+  --tracking-label: 0.12em;
+  --tracking-mono: 0.02em;
+
+  /* Spacing scale (8px base) */
+  --space-1: 0.5rem;
+  --space-2: 1rem;
+  --space-3: 1.5rem;
+  --space-4: 2rem;
+  --space-5: 3rem;
+  --space-6: 4rem;
+  --space-7: 6rem;
+  --space-8: 8rem;
+  --space-9: 10rem;
+  --space-10: 14rem;
+
+  /* Section rhythm */
+  --section-gap: clamp(5rem, 10vw, 10rem);
+  --container-width: 1440px;
+  --container-padding: clamp(1.5rem, 5vw, 5rem);
+
+  /* Borders */
+  --rule-thin: 0.5px;
+  --rule-base: 1px;
+  --rule-thick: 2px;
+  --rule-stamp: 1.5px;
+  --radius-sm: 2px;
+  --radius-md: 4px;
+  --radius-lg: 8px;
+
+  /* Shadows */
+  --shadow-sm:  0 1px 3px rgba(16,24,32,0.08);
+  --shadow-md:  0 4px 16px rgba(16,24,32,0.10);
+  --shadow-lg:  0 12px 40px rgba(16,24,32,0.14);
+  --shadow-xl:  0 24px 80px rgba(16,24,32,0.18);
+  --shadow-stamp: 3px 3px 12px rgba(16,24,32,0.20);
+
+  /* Transitions */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.45, 0, 0.55, 1);
+  --dur-fast: 150ms;
+  --dur-base: 250ms;
+  --dur-slow: 400ms;
+  --dur-slower: 600ms;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* ─── Tailwind v4 theme registration ──────────────────────── */
+@theme {
+  /* Colors */
+  --color-ink:        #101820;
+  --color-paper:      #F7F5F0;
+  --color-paper-dark: #EDE9E1;
+  --color-paper-mid:  #E4DFD5;
+  --color-harbor:     #1E3A4C;
+  --color-harbor-900: #0F2130;
+  --color-harbor-800: #152B3A;
+  --color-harbor-600: #2A4F68;
+  --color-harbor-500: #3A6A87;
+  --color-harbor-300: #7FA8BE;
+  --color-harbor-100: #D4E5EF;
+  --color-signal:     #C8451F;
+  --color-signal-dark:#A33518;
+  --color-signal-light:#D96240;
+  --color-brass:      #9A7B4F;
+  --color-brass-dark: #7A6138;
+  --color-brass-light:#BFA880;
+  --color-slate:      #5E6B73;
+  --color-slate-dark: #4A555C;
+  --color-slate-light:#8A969D;
+  --color-ink-soft:   #1C2530;
+
+  /* Fonts — registered after loading via next/font */
+  --font-display: var(--font-fraunces), Georgia, "Times New Roman", serif;
+  --font-body:    var(--font-inter), "Helvetica Neue", Arial, sans-serif;
+  --font-mono:    var(--font-ibm-plex-mono), "Courier New", monospace;
+
+  /* Border radius */
+  --radius-sm:  2px;
+  --radius-md:  4px;
+  --radius-lg:  8px;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ─── Base Reset & Body ────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: var(--text-body-lg);
+  line-height: var(--leading-body);
+}
+
+/* ─── Typography Utilities ─────────────────────────────────── */
+.font-display {
+  font-family: var(--font-display);
+}
+
+.font-mono {
+  font-family: var(--font-mono);
+}
+
+.text-display-xl {
+  font-size: var(--text-display-xl);
+  line-height: var(--leading-display);
+  letter-spacing: var(--tracking-display);
+  font-family: var(--font-display);
+  font-weight: 800;
+}
+
+.text-display-lg {
+  font-size: var(--text-display-lg);
+  line-height: 1.05;
+  letter-spacing: var(--tracking-display);
+  font-family: var(--font-display);
+  font-weight: 700;
+}
+
+.text-display-md {
+  font-size: var(--text-display-md);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+  font-family: var(--font-display);
+  font-weight: 600;
+}
+
+.text-label {
+  font-size: var(--text-label);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.text-mono {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: var(--tracking-mono);
+}
+
+/* ─── Section Container ────────────────────────────────────── */
+.container-site {
+  max-width: var(--container-width);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--container-padding);
+  padding-right: var(--container-padding);
+}
+
+.section {
+  padding-top: var(--section-gap);
+  padding-bottom: var(--section-gap);
+}
+
+/* ─── Brass Rule ───────────────────────────────────────────── */
+.brass-rule {
+  border: none;
+  border-top: var(--rule-base) solid var(--brass);
+  opacity: 0.4;
+}
+
+.brass-rule-full {
+  border: none;
+  border-top: var(--rule-base) solid var(--brass);
+}
+
+/* ─── Deal Stamp Component ─────────────────────────────────── */
+.deal-stamp {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 14px;
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  position: relative;
+  transform: rotate(1.5deg);
+  transition:
+    transform var(--dur-slow) var(--ease-out),
+    box-shadow var(--dur-slow) var(--ease-out);
+}
+
+.deal-stamp::before,
+.deal-stamp::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+/* outer rule */
+.deal-stamp::before {
+  border: var(--rule-stamp) solid currentColor;
+}
+
+/* inner rule — offset inward */
+.deal-stamp::after {
+  inset: 3px;
+  border: calc(var(--rule-stamp) * 0.5) solid currentColor;
+}
+
+.deal-stamp:hover {
+  transform: rotate(0deg) translateY(-2px);
+  box-shadow: var(--shadow-stamp);
+}
+
+.deal-stamp-sold {
+  color: var(--signal);
+  border-color: var(--signal);
+}
+
+.deal-stamp-available {
+  color: var(--brass);
+  border-color: var(--brass);
+}
+
+.deal-stamp-contract {
+  color: var(--slate);
+  border-color: var(--slate);
+}
+
+/* ─── Parcel Texture (dark sections only) ──────────────────── */
+.parcel-texture {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cg fill='none' stroke='%23F7F5F0' stroke-width='0.5' opacity='0.06'%3E%3Crect x='10' y='10' width='40' height='30'/%3E%3Crect x='55' y='10' width='55' height='45'/%3E%3Crect x='10' y='45' width='40' height='65'/%3E%3Crect x='55' y='60' width='30' height='50'/%3E%3Crect x='90' y='60' width='20' height='50'/%3E%3Cline x1='0' y1='45' x2='120' y2='45'/%3E%3Cline x1='55' y1='0' x2='55' y2='120'/%3E%3Cline x1='85' y1='55' x2='85' y2='120'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: 120px 120px;
+}
+
+/* ─── Button Base Styles ───────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: var(--text-body-md);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  padding: 0.875rem 1.75rem;
+  border-radius: var(--radius-md);
+  transition:
+    background-color var(--dur-base) var(--ease-out),
+    border-color var(--dur-base) var(--ease-out),
+    color var(--dur-base) var(--ease-out),
+    transform var(--dur-fast) var(--ease-out),
+    box-shadow var(--dur-base) var(--ease-out);
+  cursor: pointer;
+  text-decoration: none;
+  border: 2px solid transparent;
+  white-space: nowrap;
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--signal);
+  outline-offset: 3px;
+}
+
+.btn-signal {
+  background-color: var(--signal);
+  color: var(--paper);
+  border-color: var(--signal);
+}
+
+.btn-signal:hover {
+  background-color: var(--signal-dark);
+  border-color: var(--signal-dark);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(200, 69, 31, 0.3);
+}
+
+.btn-ghost {
+  background-color: transparent;
+  color: var(--paper);
+  border-color: rgba(247, 245, 240, 0.4);
+}
+
+.btn-ghost:hover {
+  background-color: rgba(247, 245, 240, 0.08);
+  border-color: rgba(247, 245, 240, 0.7);
+}
+
+.btn-ghost-ink {
+  background-color: transparent;
+  color: var(--ink);
+  border-color: rgba(16, 24, 32, 0.3);
+}
+
+.btn-ghost-ink:hover {
+  background-color: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+}
+
+.btn-lg {
+  padding: 1.125rem 2.25rem;
+  font-size: 1rem;
+}
+
+.btn-sm {
+  padding: 0.625rem 1.25rem;
+  font-size: var(--text-body-md);
+}
+
+/* ─── Eyebrow / Section Label ──────────────────────────────── */
+.eyebrow {
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--brass);
+  font-family: var(--font-mono);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.eyebrow::before {
+  content: '';
+  display: block;
+  width: 2rem;
+  height: 1px;
+  background-color: var(--brass);
+  flex-shrink: 0;
+}
+
+/* ─── Focus Styles ─────────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--signal);
+  outline-offset: 3px;
+  border-radius: var(--radius-sm);
+}
+
+/* ─── Scrollbar ────────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--paper-dark);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--brass);
+  border-radius: 3px;
+}
+
+/* ─── Selection ────────────────────────────────────────────── */
+::selection {
+  background-color: var(--signal);
+  color: var(--paper);
+}
+
+/* ─── Reduced Motion ───────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .deal-stamp {
+    transform: none;
+  }
+}
+
+/* ─── Print ────────────────────────────────────────────────── */
+@media print {
+  body {
+    background: white;
+    color: black;
+  }
 }
