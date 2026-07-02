@@ -101,8 +101,8 @@ export default function Hero() {
           ref={overlayRef}
           style={{ opacity: 0, marginBottom: "clamp(0.75rem, 2vh, 1.25rem)" }}
         >
-          <p className="font-mono text-label font-bold tracking-[0.22em] text-signal uppercase flex items-center gap-3">
-            <span className="block w-8 h-px bg-signal/80" aria-hidden="true" />
+          <p className="font-mono text-label font-bold tracking-[0.22em] text-paper/90 uppercase flex items-center gap-3" style={{ textShadow: '0 1px 6px rgba(0,0,0,0.7)' }}>
+            <span className="block w-8 h-px bg-signal" aria-hidden="true" />
             Staten Island · Commercial Investment
           </p>
         </div>
